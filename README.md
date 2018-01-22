@@ -24,7 +24,7 @@ using [dep](https://github.com/golang/dep).
 ### Kubernetes master node(s)
 
 Ensure the `ImagePolicyWebhook` admission controller is enabled. Refer to
-the [ImagePolicyWebhook](https://kubernetes.io/docs/admin/admission-controllers/#imagepolicywebhook)
+the [official](https://kubernetes.io/docs/admin/admission-controllers/#imagepolicywebhook)
 documentation.
 
 Create a admission control configuration file. For example create
@@ -55,7 +55,7 @@ apiVersion: v1
 kind: Config
 clusters:
 - cluster:
-    certificate-authority: /etc/kubernetes/k8s-bouncer/server.cert
+    certificate-authority: /etc/kubernetes/kube-image-bouncer/server.cert
     server: https://bouncer.local.lan:1323/policy
   name: bouncer_webhook
 contexts:
