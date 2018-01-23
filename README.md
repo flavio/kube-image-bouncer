@@ -217,3 +217,15 @@ The culprit is inside of the latest line of the output, the pod creation has
 been forbidden by our admission controller with the following message:
 
 > Images using latest tag are not allowed
+
+# Caveats
+
+The admission controller is used to vet **all** the containers scheduled to run
+inside of the cluster. That includes containers providing core services like
+kube-dns, dex, kubedash,... If the image bouncer service is unreachable these
+services won't be accepted inside of the cluster (because we set `defaultAllow` to
+`false` inside of `/etc/kubernetes/admission_configuration.json`).
+
+We could run the image bouncer on top of the kubernetes cluster, but that
+would require its container to be accepted into the cluster, which leads to
+a *"chicken-egg"* problem.
