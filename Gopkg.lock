@@ -144,6 +144,12 @@
   version = "v0.9.0"
 
 [[projects]]
+  name = "gopkg.in/urfave/cli.v1"
+  packages = ["."]
+  revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
+  version = "v1.20.0"
+
+[[projects]]
   branch = "master"
   name = "k8s.io/api"
   packages = ["imagepolicy/v1alpha1"]
@@ -180,6 +186,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e2043c55a029aaa0c799f343624cf1a3dfeaa72e0607f3f6a3bf6de2c1bb2d49"
+  inputs-digest = "e81841bfaa23785752959fa65af06404ba47d6497af07649de3d7f48ddcf3bd5"
   solver-name = "gps-cdcl"
   solver-version = 1
