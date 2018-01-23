@@ -13,11 +13,17 @@ This admission control will reject all the pods that are using images with the
 To build the project just do:
 
 ```
-go get github.com/flavio/kube-image-bouncer
+$ go get github.com/flavio/kube-image-bouncer
 ```
 
 The project dependencies are tracked inside of this repository and are managed
 using [dep](https://github.com/golang/dep).
+
+This application is distributed also as a [Docker image](https://hub.docker.com/r/flavio/kube-image-bouncer/):
+
+```
+$ docker pull flavio/kube-image-bouncer
+```
 
 ## Deployment
 
@@ -83,7 +89,7 @@ The kubeconfig references also a client certificate and key. These can be genera
 by doing:
 
 ```
-openssl req  -nodes -new -x509  -keyout user.key -out user.cert
+$ openssl req  -nodes -new -x509  -keyout user.key -out user.cert
 ```
 
 ### Node running the actual web application
@@ -91,7 +97,7 @@ openssl req  -nodes -new -x509  -keyout user.key -out user.cert
 Create a server key and certificate with the following command:
 
 ```
-openssl req  -nodes -new -x509  -keyout server.key -out server.cert
+$ openssl req  -nodes -new -x509  -keyout server.key -out server.cert
 ```
 
 Copy the `server.cert` file to the kubernetes manager node(s) as
@@ -99,9 +105,19 @@ Copy the `server.cert` file to the kubernetes manager node(s) as
 `kube-apiserver` on all the master node(s).
 
 Start the web application by doing:
+
 ```
-kube-image-bouncer -cert server.cert -key server.key
+$ kube-image-bouncer -cert server.cert -key server.key
 ```
+
+When using the [Docker image](https://hub.docker.com/r/flavio/kube-image-bouncer/):
+
+```
+$ docker run --rm -v `pwd`/server.key:/certs/server.key:ro -v `pwd`/server.cert:/certs/server.cert:ro -p 1323:1323 flavio/kube-image-bouncer -k /certs/server.key -c /certs/server.cert
+```
+
+This will start a container with the server key and certificate mounted read-only
+inside of it.
 
 ## Profit!
 
@@ -132,7 +148,7 @@ spec:
 Then create the resource:
 
 ```
-kubectl create -f nginx-versioned.yml
+$ kubectl create -f nginx-versioned.yml
 ```
 Ensure the replication controller is actually running:
 
@@ -170,7 +186,7 @@ spec:
 Then create the resource:
 
 ```
-kubectl create -f nginx-latest.yml
+$ kubectl create -f nginx-latest.yml
 ```
 
 This time the replication controller won't have all the desired pods running:
