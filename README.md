@@ -94,7 +94,9 @@ $ openssl req  -nodes -new -x509  -keyout user.key -out user.cert
 
 ### Node running the actual web application
 
-Create a server key and certificate with the following command:
+The webhook endpoint must be secured using tls to be used by kubernetes.
+
+You can create a server key and certificate with the following command:
 
 ```
 $ openssl req  -nodes -new -x509  -keyout server.key -out server.cert
@@ -107,7 +109,7 @@ Copy the `server.cert` file to the kubernetes manager node(s) as
 Start the web application by doing:
 
 ```
-$ kube-image-bouncer -cert server.cert -key server.key
+$ kube-image-bouncer --cert server.cert --key server.key
 ```
 
 When using the [Docker image](https://hub.docker.com/r/flavio/kube-image-bouncer/):
@@ -118,6 +120,9 @@ $ docker run --rm -v `pwd`/server.key:/certs/server.key:ro -v `pwd`/server.cert:
 
 This will start a container with the server key and certificate mounted read-only
 inside of it.
+
+If you want to perform tls termination outside of this application, just start
+it without providing a key and a certificate.
 
 ## Profit!
 
