@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nginx-latest
+spec:
+  replicas: 1
+  selector:
+    app: nginx-latest
+  template:
+    metadata:
+      name: nginx-latest
+      labels:
+        app: nginx-latest
+    spec:
+      containers:
+      - name: nginx-latest
+        image: nginx
+        ports:
+        - containerPort: 80

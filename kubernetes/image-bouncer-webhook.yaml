@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: image-bouncer-webhook
+  name: image-bouncer-webhook
+spec:
+  ports:
+    - name: https
+      port: 443
+      targetPort: 1323
+      protocol: "TCP"
+  selector:
+    app: image-bouncer-webhook
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: image-bouncer-webhook
+spec:
+  template:
+    metadata:
+      labels:
+        app: image-bouncer-webhook
+    spec:
+      containers:
+        - name: image-bouncer-webhook
+          image: "flavio/kube-image-bouncer"
+          args:
+            - "--cert=/etc/admission-controller/tls/tls.crt"
+            - "--key=/etc/admission-controller/tls/tls.key"
+            - "--debug"
+          volumeMounts:
+            - name: tls
+              mountPath: /etc/admission-controller/tls
+      volumes:
+        - name: tls
+          secret:
+            secretName: tls-image-bouncer-webhook

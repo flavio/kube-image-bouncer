@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"net/http"
-	"strings"
 
-	"github.com/containers/image/docker/reference"
+	"github.com/flavio/kube-image-bouncer/rules"
+
 	"github.com/labstack/echo"
 	"k8s.io/api/imagepolicy/v1alpha1"
 )
@@ -27,7 +27,7 @@ func PostImagePolicy() echo.HandlerFunc {
 
 		for _, container := range imageReview.Spec.Containers {
 			images = append(images, container.Image)
-			usingLatest, err := isUsingLatestTag(container.Image)
+			usingLatest, err := rules.IsUsingLatestTag(container.Image)
 			if err != nil {
 				c.Logger().Errorf("Error while parsing image name: %+v", err)
 				return c.JSON(http.StatusInternalServerError, "error while parsing image name")
@@ -51,13 +51,4 @@ func PostImagePolicy() echo.HandlerFunc {
 
 		return c.JSON(http.StatusOK, review)
 	}
-}
-
-func isUsingLatestTag(image string) (bool, error) {
-	named, err := reference.ParseNormalizedNamed(image)
-	if err != nil {
-		return false, err
-	}
-
-	return strings.HasSuffix(reference.TagNameOnly(named).String(), ":latest"), nil
 }

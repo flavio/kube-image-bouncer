@@ -51,7 +51,8 @@ func main() {
 
 	app.Action = func(c *cli.Context) error {
 		e := echo.New()
-		e.POST("/policy", handlers.PostImagePolicy())
+		e.POST("/image_policy", handlers.PostImagePolicy())
+		e.POST("/", handlers.PostValidatingAdmission())
 
 		e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 			Format: "method=${method}, uri=${uri}, status=${status}\n",
