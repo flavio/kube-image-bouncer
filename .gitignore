@@ -1,3 +1,4 @@
 *.key
 *.cert
 kube-image-bouncer
+pki

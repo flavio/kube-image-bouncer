@@ -11,6 +11,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/containers/image/pkg/docker/config"
 	"github.com/containers/image/types"
 	"github.com/containers/storage/pkg/homedir"
@@ -23,11 +25,11 @@ func TestDockerCertDir(t *testing.T) {
 	const nondefaultPerHostDir = "/this/is/not/the/default/certs.d"
 	const variableReference = "$HOME"
 	const rootPrefix = "/root/prefix"
-	const registryHostPort = "localhost:5000"
+	const registryHostPort = "thishostdefinitelydoesnotexist:5000"
 
-	systemPerHostResult := filepath.Join(systemPerHostCertDirPath, registryHostPort)
+	systemPerHostResult := filepath.Join(systemPerHostCertDirPaths[len(systemPerHostCertDirPaths)-1], registryHostPort)
 	for _, c := range []struct {
-		ctx      *types.SystemContext
+		sys      *types.SystemContext
 		expected string
 	}{
 		// The common case
@@ -85,7 +87,8 @@ func TestDockerCertDir(t *testing.T) {
 			filepath.Join(variableReference, registryHostPort),
 		},
 	} {
-		path := dockerCertDir(c.ctx, registryHostPort)
+		path, err := dockerCertDir(c.sys, registryHostPort)
+		require.Equal(t, nil, err)
 		assert.Equal(t, c.expected, path)
 	}
 }
@@ -141,7 +144,7 @@ func TestGetAuth(t *testing.T) {
 			expectedUsername string
 			expectedPassword string
 			expectedError    error
-			ctx              *types.SystemContext
+			sys              *types.SystemContext
 		}{
 			{
 				name:       "empty hostname",
@@ -237,7 +240,7 @@ func TestGetAuth(t *testing.T) {
 				}),
 				expectedUsername: "foo",
 				expectedPassword: "bar",
-				ctx: &types.SystemContext{
+				sys: &types.SystemContext{
 					DockerAuthConfig: &types.DockerAuthConfig{
 						Username: "foo",
 						Password: "bar",
@@ -255,11 +258,11 @@ func TestGetAuth(t *testing.T) {
 				continue
 			}
 
-			var ctx *types.SystemContext
-			if tc.ctx != nil {
-				ctx = tc.ctx
+			var sys *types.SystemContext
+			if tc.sys != nil {
+				sys = tc.sys
 			}
-			username, password, err := config.GetAuthentication(ctx, tc.hostname)
+			username, password, err := config.GetAuthentication(sys, tc.hostname)
 			if err == nil && tc.expectedError != nil {
 				t.Errorf("[%s] got unexpected non error and username=%q, password=%q", tc.name, username, password)
 				continue

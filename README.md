@@ -19,7 +19,7 @@ confusing and missing some details.
 
 I found the documentation about `GenericAdmissionWebhook` and
 `ValidatingAdmissionWebhook` more troublesome to understand compared to the
-one of `ImagePolicyWebhook`. You have to combine the 1.9 documentation of 
+one of `ImagePolicyWebhook`. You have to combine the 1.9 documentation of
 `ValidatingAdmissionWebhook` together with the 1.8 documentation of
 `GenericAdmissionWebhook`. The latter one references the
 [Dynamic Admission Control](https://v1-8.docs.kubernetes.io/docs/admin/extensible-admission-controllers/)
@@ -36,7 +36,7 @@ resource to be a `beta1` one. That caused some changes in terms of the request
 format sent from the API server to the webhook endpoint and in terms of
 expected response.
 
-Right now this document (and the code) focuses on version 1.8.
+Right now this document (and the code) focuses on version 1.9.
 
 # Comparison
 
@@ -70,7 +70,7 @@ Good things about `ValidatingAdmissionWebhook`:
 Bad things about `ValidatingAdmissionWebhook`:
 
   * Starting from the 1.8 release it's no longer possible to instruct the API
-    server can be instructed to reject the images if the webhook endpoint is
+    server to reject the images if the webhook endpoint is
     not reachable. Hence, when the endpoint is not reachable, all the resources
     are going to be automatically accepted.
 
