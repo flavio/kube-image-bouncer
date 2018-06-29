@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -13,7 +14,7 @@ import (
 )
 
 func main() {
-	var cert, key string
+	var cert, key, whitelist string
 	var port int
 	var debug bool
 
@@ -33,6 +34,12 @@ func main() {
 			Usage:       "Path to the key to use",
 			EnvVar:      "BOUNCER_KEY",
 			Destination: &key,
+		},
+		cli.StringFlag{
+			Name:        "registry-whitelist",
+			Usage:       "Comma separated list of accepted registries",
+			EnvVar:      "BOUNCER_REGISTRY_WHITELIST",
+			Destination: &whitelist,
 		},
 		cli.IntFlag{
 			Name:        "port, p",
@@ -60,6 +67,16 @@ func main() {
 
 		if debug {
 			e.Logger.SetLevel(log.DEBUG)
+		}
+
+		if whitelist != "" {
+			handlers.RegistryWhitelist = strings.Split(whitelist, ",")
+			fmt.Printf(
+				"Accepting only images from these registries: %+v\n",
+				handlers.RegistryWhitelist)
+			fmt.Println("WARN: this feature is implemented only by the ValidatingAdmissionWebhook code")
+		} else {
+			fmt.Println("WARN: accepting images from ALL registries")
 		}
 
 		var err error

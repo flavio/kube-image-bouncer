@@ -12,6 +12,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+var RegistryWhitelist []string
+
 func PostValidatingAdmission() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var admissionReview v1beta1.AdmissionReview
@@ -48,6 +50,25 @@ func PostValidatingAdmission() echo.HandlerFunc {
 					Message: "Images using latest tag are not allowed",
 				}
 				break
+			}
+
+			if len(RegistryWhitelist) > 0 {
+				validRegistry, err := rules.IsFromWhiteListedRegistry(
+					container.Image,
+					RegistryWhitelist)
+				if err != nil {
+					c.Logger().Errorf("Error while looking for image registry: %+v", err)
+					return c.JSON(
+						http.StatusInternalServerError,
+						"error while looking for image registry")
+				}
+				if !validRegistry {
+					admissionReviewResponse.Response.Allowed = false
+					admissionReviewResponse.Response.Result = &metav1.Status{
+						Message: "Images from a non whitelisted registry",
+					}
+					break
+				}
 			}
 		}
 
