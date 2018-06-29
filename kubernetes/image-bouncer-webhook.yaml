@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: image-bouncer-webhook
-          image: "flavio/kube-image-bouncer"
+          image: "flavio/kube-image-bouncer:1.9"
           args:
             - "--cert=/etc/admission-controller/tls/tls.crt"
             - "--key=/etc/admission-controller/tls/tls.key"
