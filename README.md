@@ -208,7 +208,7 @@ certificate can also be a self-signed one.
 Create a server key and certificate with the following command:
 
 ```
-$ openssl req  -nodes -new -x509 -keyout apiserver-clientkey.pem -out apiserver-client.pem
+$ openssl req  -nodes -new -x509 -keyout apiserver-client-key.pem -out apiserver-client.pem
 ```
 
 ## Kubernetes master node(s)
